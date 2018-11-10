@@ -1,0 +1,15 @@
+import win.ui;
+import libxl;
+import fsys.dlg;
+/*DSG{{*/
+mainForm = win.form(text="aardio form";right=497;bottom=207)
+mainForm.add(
+static3={cls="static";text="请执行Script文件夹下的代码";left=36;top=52;right=480;bottom=103;font=LOGFONT(h=-32);transparent=1;z=1};
+static4={cls="static";text="For 3.6.5";left=173;top=123;right=304;bottom=160;font=LOGFONT(h=-24);transparent=1;z=2}
+)
+/*}}*/
+
+mainForm.enableDpiScaling();
+mainForm.show();
+
+return win.loopMessage(); 

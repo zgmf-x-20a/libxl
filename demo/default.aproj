@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project ver="10" name="libxl_examp" libEmbed="true" icon="..." ui="win" output="libxl_examp.exe" CompanyName="Auron" FileDescription="libxl_examp" LegalCopyright="Copyright (C) Auron 2017" ProductName="libxl_examp" InternalName="libxl_examp" FileVersion="0.0.0.03" ProductVersion="0.0.0.03" publishDir="/Publish/" dstrip="false">
+	<file name="main.aardio" path="main.aardio" comment="main.aardio"/>
+	<folder name="资源文件" path="res" embed="true">
+		<file name="libxl.dll" path="res\libxl.dll" comment="res\libxl.dll"/>
+	</folder>
+	<folder name="script" path="script" comment="script" embed="false">
+		<file name="logo.png" path="script\logo.png" comment="script\logo.png"/>
+		<file name="receipt.aardio" path="script\receipt.aardio" comment="script\receipt.aardio"/>
+		<file name="writedatatime.aardio" path="script\writedatatime.aardio" comment="script\writedatatime.aardio"/>
+		<file name="writeformulas.aardio" path="script\writeformulas.aardio" comment="script\writeformulas.aardio"/>
+	</folder>
+</project>
