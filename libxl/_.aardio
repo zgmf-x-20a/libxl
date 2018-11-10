@@ -1,0 +1,404 @@
+﻿import raw;
+class libxl{
+	ctor( file ){
+		ext,fileExist ="xlsx",..io.exist(file);//默认为 EXCEL XLSX，公用路径
+		if file{
+			ext = file;
+			var filePath = ..io.splitpath(file);
+			if filePath.ext != "" ext = filePath.ext;
+		}
+		ext = ..string.replace(ext,"@.",""); //去除"."
+		
+		if !fileExist && (file != ext && file != null) return null,"文件不存在"; 
+		
+		function load(file){
+			if #file > 1024 {
+				if !Book.LoadRaw(this.hwnd,file,#file) return null,"无法从内存加载";
+				this.open = true;
+			}
+			else {
+				file = ..io.exist(file)
+				if !Book.Load(this.hwnd,file) return null,"文件无法加载"; 
+				this.file = file;
+				this.open = true;
+			}
+			
+			var count = Book.SheetCount(this.hwnd);
+			for i=1;count;1{
+				..table.push(this.Sheet,Sheet(Book.GetSheet(this.hwnd,i-1)));//读取并添加对应的Sheet表
+			};
+			if count return true; 
+		};
+		
+		if ext = "xlsx" this.hwnd = CreateXMLBook();
+		if ext = "xls" this.hwnd = CreateBook();
+		
+		if !this.hwnd return null,"错误的参数"; 
+		
+		this.file = fileExist;
+		this.ext = ext;
+		this.open = false;
+		this.Book = Book;
+		this.Sheet = {//存储表数据
+			@{
+				_get = function(k){ //通过表名获取时
+					for i=1;#owner;1{;//搜寻表名，一致时返回
+						if owner[i].name == k return owner[i]; 
+					};
+					return null//owner[[k]]; 
+				}
+				_call = function(k){ //通过表名获取时
+					if type(k) == type.number{
+						if (k <= #owner) && (k > 0) return owner[k]; 
+					}
+					if type(k) == type.string{
+						for i=1;#owner;1{;//搜寻表名，一致时返回
+							if owner[i].name == k return owner[i]; 
+						};
+					}
+					return null; 
+				}
+			}
+		};
+		
+		if fileExist 
+			if !load(file) return null,"文件无法加载"; 
+	};
+	@_metaProperty;
+	Load = load;
+	Save = function(file){
+		//..io.print(this.hwnd,this.file)
+		var path = this.file;
+		if file path = file;
+		if !path return null,"未指定文件"; 
+		if path return Book.Save(this.hwnd,path);
+		return false; 
+	}
+	loadStr = function(pString){
+		if !Book.LoadRaw(this.hwnd,pString,#pString) return null,"文件无法从内存加载";
+		//this.file = pString;
+		var count = Book.SheetCount(this.hwnd);
+		for i=1;count;1{
+			..table.push(this.Sheet,Sheet(Book.GetSheet(this.hwnd,i-1)));
+		};
+	};
+	saveStr = function(){
+		var str = /*{byte buffer[%d]}*/
+		var result,data,size = Book.SaveRaw(this.hwnd,,1); 
+		if !result return null,"文件无法保存至变量"; 
+		data = ..raw.convert(data,eval(..string.format(str,size )))
+		return data.buffer; 
+	}
+	
+	addSheet = function(sheetName,cpSheet){
+		var iniSheetHwnd;
+		if type(cpSheet) == type.number{
+			if cpSheet > #this.Sheet return null,"工作表不存在"; 
+			iniSheetHwnd = this.Sheet[cpSheet].hwnd
+		};
+		if type(cpSheet) == type.string{
+			var sheet = this.Sheet[cpSheet]
+			if !sheet return null,"工作表不存在";
+			iniSheetHwnd = this.Sheet[cpSheet].hwnd
+		};
+		var np_Sheet = Book.AddSheet(this.hwnd,sheetName,iniSheetHwnd)
+		if !np_Sheet return null,"工作表创建失败";
+		 ..table.push(this.Sheet,Sheet(np_Sheet));
+		 return this.Sheet[#this.Sheet]; 
+	};
+	insertSheet = function(index,sheetName,cpSheet){
+		var iniSheetHwnd;
+		if type(cpSheet) == type.number{
+			if cpSheet > #this.Sheet return null,"工作表不存在"; 
+			iniSheetHwnd = this.Sheet[cpSheet].hwnd
+		};
+		if type(cpSheet) == type.string{
+			var sheet = this.Sheet[cpSheet]
+			if !sheet return null,"工作表不存在";
+			iniSheetHwnd = this.Sheet[cpSheet].hwnd
+		};
+		var np_Sheet = Book.InsertSheet(this.hwnd,index - 1,sheetName,iniSheetHwnd)
+		if !np_Sheet return null,"工作表创建失败";
+		 ..table.insert(this.Sheet,Sheet(np_Sheet),index);
+		 return this.Sheet[index]; 
+	};
+	sheetType = function(cpSheet){
+		var index;
+		if type(cpSheet) == type.string{
+			for i=1;#this.Sheet;1{;//搜寻表名，一致时返回
+				if this.Sheet[i].name == cpSheet {
+					index = i;
+					break ;
+				} ;
+			};
+		}
+		if !index index = cpSheet;
+		return Book.SheetType(this.hwnd,index -1); 
+	};
+	delSheet = function(cpSheet){
+		var index;
+		if type(cpSheet) == type.string{
+			for i=1;#this.Sheet;1{;//搜寻表名，一致时返回
+				if this.Sheet[i].name == cpSheet {
+					index = i;
+					break ;
+				} ;
+			};
+		}
+		if !index index = cpSheet;
+		var result = Book.DelSheet(this.hwnd,index -1); 
+		if !result return result;
+		..table.remove(this.Sheet,index)
+		return true; 
+	};
+	addFormat = function(hFormat){
+		if type(hFormat) == type.table hFormat = hFormat.hwnd
+		var hwnd = Book.AddFormat(this.hwnd,hFormat)
+		return Format(hwnd); 
+	};
+	addFont = function(hFont){
+		if type(hFont) == type.table hFont = hFont.hwnd
+		var hwnd = Book.AddFont(this.hwnd,hFont)
+		return Font(hwnd); 
+	};
+	addNumFormat = function(textNumFormat){
+		return (Book.AddCustomNumFormat(this.hwnd,textNumFormat) + 1);
+	};
+	getFormat = function(index){
+		return Book.Format(this.hwnd,index - 1); 	
+	};
+	getFont = function(index){
+		return Book.Font(this.hwnd,index - 1); 	
+	};
+	getNumFormat = function(index){
+		return Book.CustomNumFormat(this.hwnd,index - 1); 	
+	};
+	datePack = function(year, month, day, hour = 0, min = 0, sec = 0, msec = 0){
+		return Book.DatePack(this.hwnd,year,month,day,hour,min, sec,msec); 
+	}
+	colorPack = function(red = 0,green = 0, blue = 0){
+		return Book.ColorPack(this.hwnd,red,green,blue); 
+	}
+	dateUnpack = function(date){
+		var result,year,month,day,hour,min,sec,msec = Book.DatePack(this.hwnd,date,0,0,0,0,0,0,0); 
+		if !result return null; 
+		var date = {year = year; month = month; day = day; hour = hour;min = min;sec = sec;msec =msec}
+		return date; 
+	}
+	colorUnpack = function(rgbColor){
+		var red,green,blue = Book.DatePack(this.hwnd,rgbColor,0,0,0); 
+		if !red return null; 
+		var color = {red = red;green = green; blue = blue}
+		return color; 
+	}
+	getPicture = function(index){
+		var str = /*{byte buffer[%d]}*/
+		var picType,data,size = Book.GetPicture(this.hwnd,index - 1,,1); 
+		data = ..raw.convert(data,eval(..string.format(str,size )))
+		return data.buffer,picType; 
+	};
+	addPicture = function(file){
+		var result = Book.AddPicture(this.hwnd,..io.exist(file));
+		if result == -1 return null;
+		result += 1;
+		return result;   
+	};
+	addPictureByStr = function(pString){
+		var result = BooK.AddPicture2(this.hwnd,pString,#pString);
+		if result == -1 return null;
+		result += 1;
+		return result;   
+	};
+	getDefaultFont = function(){
+		var int = 1;
+		var name,size = BooK.DefaultFont(this.hwnd,int);
+		if !name return null;
+		return name,size;  
+	};
+	setDefaultFont = function(fontName,fontSize){
+		BooK.SetDefaultFont(this.hwnd,fontName,fontSize);
+	};
+	setKey  = function(name,key){
+		BooK.SetDefaultFont(this.hwnd,name,key);
+	};
+	setStrLocal = function(descrption){
+		BooK.SetLocale(this.hwnd,descrption);
+	};
+	getErrMsg = function(){
+		return Book.ErrorMessage(this.hwnd); 
+	};	
+	Close = function(save = false){
+		if save Book.Save(this.hwnd,this.file);
+		Release(this.hwnd);
+		owner = null;//销毁对象
+		collectgarbage("collect");
+	};
+};
+
+namespace libxl{
+
+	LIBXL_VERSON = "3.6.5.0";
+	
+	_dll = ..raw.loadDll("libxl.dll",,"cdecl");
+
+	import libxl.Book;
+	import libxl.Sheet;
+	import libxl.Format;
+	import libxl.Font;
+
+	var libxl32 = _dll;
+	
+	CreateBook 		= libxl32.api("xlCreateBook","ptr()");
+	CreateXMLBook 	= libxl32.api("xlCreateXMLBook","ptr()");
+	Release			= libxl32.api("xlBookRelease","void(ptr BookHandle)");
+
+	cellComment = class {
+		ctor( value,author,width = 100,height = 50 ){
+			this.value	= value;
+			this.author	= author;
+			this.width	= width;
+			this.height	= height;
+		};
+	}
+	cellRange = class {
+		ctor( iniRow = 1,lastRow = 1,iniCol = 1,lastCol = 1 ){
+			this.iniCol		= iniCol;
+			this.lastCol	= lastCol;
+			this.iniRow		= iniRow;
+			this.lastRow	= lastRow;
+		};
+	}
+	nameRange = class {
+		ctor( iniRow = 1,lastRow = 1,iniCol = 1,lastCol = 1,scopeID = 0,hidden = 0){
+			this.iniCol		= iniCol;
+			this.lastCol	= lastCol;
+			this.iniRow		= iniRow;
+			this.lastRow	= lastRow;
+			this.scopeID	= scopeID;
+			this.hidden		= hidden;
+			this.name		= name
+		};
+	}
+	
+	picturePos = class {
+		ctor( top,left,bottom,right,width,height, offset_x,offset_y ){
+			this.top 		= top;
+			this.left		= left;
+			this.bottom		= bottom;
+			this.right		= right;
+			this.width		= width;
+			this.height		= height;
+			this.offset_x	= offset_x;
+			this.offset_y	= offset_y;
+		};
+	}
+	_metaProperty = ..util.metaProperty(
+		formatCount = {
+			_get = function(){   
+		    	return Book.FormatSize(owner.hwnd);
+			}
+		};
+		fontCount = {
+			_get = function(){   
+		    	return Book.FontSize(owner.hwnd);
+			};
+		};
+		activeSheet = {
+			_get = function(){   
+		    	return (Book.ActiveSheet(owner.hwnd) + 1);
+			};
+			_set = function(v){   
+				var index;
+				if type(v) == type.string{
+					for i=1;#owner.Sheet;1{;//搜寻表名
+						if owner.Sheet[i].name == v {
+							index = i;
+							break ;
+						} ;
+					};
+				}
+				if !index index = v;
+		    	Book.SetActiveSheet(owner.hwnd,index - 1);
+			};
+		};
+		pictureCount = {
+			_get = function(){   
+		    	return Book.PictureSize(owner.hwnd);
+			};
+		};
+		RGB = {
+			_get = function(){   
+		    	return Book.RgbMode(owner.hwnd);
+			};
+			_set = function(v){   
+		    	return Book.SetRgbMode(owner.hwnd,v);
+			};
+		};
+		R1C1 = {
+			_get = function(){   
+		    	return Book.RefR1C1(owner.hwnd);
+			};
+			_set = function(v){   
+		    	return Book.SetRefR1C1(owner.hwnd,v);
+			};
+		};
+		biffVersion = {
+			_get = function(){   
+		    	return Book.BiffVersion(owner.hwnd);
+			};
+		}
+		Date1904 = {
+			_get = function(){   
+		    	return Book.IsDate1904(owner.hwnd);
+			};
+			_set = function(v){   
+		    	return Book.SetDate1904(owner.hwnd,v);
+			};
+		};
+		template = {
+			_get = function(){   
+		    	return Book.IsTemplate(owner.hwnd);
+			};
+			_set = function(v){   
+		    	return Book.SetTemplate(owner.hwnd,v);
+			};
+		};
+	)
+	
+};
+
+/**intellisense()
+libxl() = !libxl.
+!libxl.Load(.(文件路径|文件流) = 加载指定Excel文件或文件流,失败返回null
+!libxl.Save(.() = 保存当前 Excel 文件
+!libxl.addSheet(.(工作表名称,[源工作表名|位置]) = 新增工作表，可复制源工作表，失败返回null
+!libxl.insertSheet(.(插入位置,工作表名称,[源工作表名|位置]) = 在指定位置插入工作表，可复制源工作表，失败返回null
+!libxl.delSheet(.(工作表名称|位置) = 删除指定名称或位置的工作表，失败返回false
+!libxl.sheetType(.(工作表名称|位置) = 获取指定名称或位置的工作表类型，失败返回false
+!libxl.addFormat(.([Format句柄]) = 新增格式句柄，可复制源格式。\n成功返回句柄，失败返回null
+!libxl.addFont(.([Font句柄]) = 新增字体句柄，可复制源格式。\n成功返回句柄，失败返回null
+!libxl.getFormat(.(工作簿内的Format索引) = 获得指定 Index 对应的 Format 句柄，失败返回null
+!libxl.getFont(.(工作簿内的Font索引) = 获得指定 Index 对应的 Font 句柄，失败返回null
+!libxl.getPicture(.(工作簿内的Picture索引) = 获得指定 Index 对应的 Picture 数据(二进制)及图片格式，失败返回null
+!libxl.saveStr(.() = 返回当前工作薄的数据(二进制)，失败返回null
+!libxl.addPicture(.(文件路径) = 添加指定路径的图片并返回 图片 Index，失败返回null
+!libxl.addPictureByStr(.(文件流) = 加载文件流中的图片并返回 图片 Index，失败返回null
+!libxl.getDefaultFont(.() = 返回工作薄默认的字体名字及字号，失败返回null
+!libxl.setDefaultFont(.(字体名,字号) = 设置工作薄默认的字体
+!libxl.setKey(.(name,key) = 设置自定义 license key
+!libxl.getErrMsg(.() = 获取错误信息
+!libxl.Close(.() = 关闭并销毁对象
+!libxl.formatCount = 工作薄内的 Format 数 
+!libxl.fontCount = 工作薄内的 Font 数 
+!libxl.activeSheet = 工作簿当前激活的工作簿
+!libxl.pictureCount = 工作薄内的 Picture 数 
+!libxl.RGB = RGB模式
+!libxl.R1C1 = R1C1模式
+!libxl.biffVersion = biffVersion，仅xls有效
+!libxl.Date1904 = 是否启用1904年作为日期基准
+!libxl.template = 是否是模板
+!libxl.cellComment(.(value,author,[width],[height]) = 批注类,仅xls有效
+!libxl.cellRange(.([iniCol],[lastCol],[]iniRow,lastRow]) = 	区域类
+!libxl.nameRange(.([iniCol],[lastCol],[]iniRow,lastRow],[scopeID],[hidden]) = 命名区域类
+!libxl.picturePos(.(top,left,bottom,right,width,height, offset_x,offset_y) = 图片位置类
+end intellisense**/
