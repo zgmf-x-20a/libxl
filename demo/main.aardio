@@ -1,15 +1,21 @@
 import win.ui;
-import libxl;
-import fsys.dlg;
 /*DSG{{*/
-mainForm = win.form(text="aardio form";right=497;bottom=207)
+mainForm = win.form(text="libxl-3.8";right=598;bottom=151)
 mainForm.add(
-static3={cls="static";text="请执行Script文件夹下的代码";left=36;top=52;right=480;bottom=103;font=LOGFONT(h=-32);transparent=1;z=1};
-static4={cls="static";text="For 3.6.5";left=173;top=123;right=304;bottom=160;font=LOGFONT(h=-24);transparent=1;z=2}
+static={cls="static";text="请执行Script下的示例";left=131;top=50;right=499;bottom=116;font=LOGFONT(h=-35);transparent=1;z=1}
 )
 /*}}*/
 
-mainForm.enableDpiScaling();
-mainForm.show();
+_dll = ..raw.loadDll(..string.load("/res/libxl.dll"),,"cdecl");
+var libxl32 = _dll;
 
-return win.loopMessage(); 
+CreateBook 		= libxl32.api("xlCreateBook","ptr()");
+CreateXMLBook 	= libxl32.api("xlCreateXMLBook","ptr()");
+Release			= libxl32.api("xlBookRelease","void(ptr BookHandle)");
+Load			= libxl32.api("xlBookLoad","int(ptr BookHandle, ustring filename)")
+Save			= libxl32.api("xlBookSave","bool(ptr BookHandle, ustring filename)")
+
+var book = CreateXMLBook();
+
+mainForm.show();
+return win.loopMessage();

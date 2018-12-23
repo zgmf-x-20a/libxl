@@ -16,7 +16,7 @@ namespace Font{
 	_metaProperty = ..util.metaProperty(
 		size = {
 			_get = function(){   
-		    	return Size(owner.hwnd);//Fonthandle
+		    	return Size(owner.hwnd);
 			};
 			_set = function( v ){
 				SetSize(owner.hwnd,v); 
@@ -24,7 +24,7 @@ namespace Font{
 		};
 		italic = {
 			_get = function(){   
-		    	return Italic(owner.hwnd);//Fonthandle
+		    	return Italic(owner.hwnd);
 			};
 			_set = function( v ){
 				SetItalic(owner.hwnd,v); 
@@ -32,7 +32,7 @@ namespace Font{
 		};
 		strikeOut = {
 			_get = function(){   
-		    	return StrikeOut(owner.hwnd);//Fonthandle
+		    	return StrikeOut(owner.hwnd);
 			};
 			_set = function( v ){
 				SetStrikeOut(owner.hwnd,v); 
@@ -40,7 +40,7 @@ namespace Font{
 		};
 		color = {
 			_get = function(){   
-		    	return Color(owner.hwnd);//Fonthandle
+		    	return Color(owner.hwnd);
 			};
 			_set = function( v ){
 				SetColor(owner.hwnd,v); 
@@ -48,15 +48,15 @@ namespace Font{
 		};
 		bold = {
 			_get = function(){   
-		    	return Bold(owner.hwnd);//Fonthandle
+		    	return Bold(owner.hwnd);
 			};
 			_set = function( v ){
-				SetBold(owner.hwnd,v); 
+				SetBold(owner.hwnd,tonumber(v)); 
 			};
 		};
 		script = {
 			_get = function(){   
-		    	return Script(owner.hwnd);//Fonthandle
+		    	return Script(owner.hwnd);
 			};
 			_set = function( v ){
 				SetScript(owner.hwnd,v); 
@@ -64,7 +64,7 @@ namespace Font{
 		};
 		underLine = {
 			_get = function(){   
-		    	return Underline(owner.hwnd);//Fonthandle
+		    	return Underline(owner.hwnd);
 			};
 			_set = function( v ){
 				SetUnderline(owner.hwnd,v); 
@@ -72,7 +72,7 @@ namespace Font{
 		};
 		name = {
 			_get = function(){   
-		    	return Name(owner.hwnd);//Fonthandle
+		    	return Name(owner.hwnd);
 			};
 			_set = function( v ){
 				SetName(owner.hwnd,v); 
@@ -102,11 +102,22 @@ namespace Font{
 	SetUnderline	= libxl32.api("xlFontSetUnderline","void(ptr FontHandle, int underline)")
 	
 	Name			= libxl32.api("xlFontName","ustring(ptr FontHandle)")
-	SetName			= libxl32.api("xlFontSetName","int(ptr FontHandle, ustring& name)")
+	SetName			= libxl32.api("xlFontSetName","int(ptr FontHandle, ustring name)")
 	
 }
 
 /**intellisense()
+libxl.Format() = !xlFont.
+!libxl.Format() = !xlFont.
+!libxl.addFont() = !xlFont.
+!xlFont.size = 字号
+!xlFont.italic = 斜体
+!xlFont.strikeOut = 删除线
+!xlFont.color = 颜色,_COLOR_
+!xlFont.bold = 粗体
+!xlFont.script = 小字符样式,_SCRIPT_
+!xlFont.underLine = 下划线,_UNDERLINE_
+!xlFont.name = 字体
 _COLOR_BLACK=@8/*_COLOR_BLACK*/
 _COLOR_WHITE=@9/*_COLOR_WHITE*/
 _COLOR_RED=@10/*_COLOR_RED*/
@@ -170,4 +181,7 @@ _UNDERLINE_SINGLE=@1/*_UNDERLINE_SINGLE*/
 _UNDERLINE_DOUBLE=@2/*_UNDERLINE_DOUBLE*/
 _UNDERLINE_SINGLEACC=@3/*_UNDERLINE_SINGLEACC*/
 _UNDERLINE_DOUBLEACC=@4/*_UNDERLINE_DOUBLEACC*/
+_SCRIPT_NORMAL=@0/*_SCRIPT_NORMAL*/
+_SCRIPT_SUPER=@1/*_SCRIPT_SUPER*/
+_SCRIPT_SUB=@2/*_SCRIPT_SUB*/
 end intellisense**/

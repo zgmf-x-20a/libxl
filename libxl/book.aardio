@@ -4,11 +4,11 @@ var libxl32 = _dll;
 
 namespace Book{
 
-	Load			= libxl32.api("xlBookLoad","int(ptr BookHandle, STRING filename)")
-	Save			= libxl32.api("xlBookSave","bool(ptr BookHandle, STRING filename)")
+	Load			= libxl32.api("xlBookLoad","bool(ptr BookHandle, ustring filename)")
+	Save			= libxl32.api("xlBookSave","bool(ptr BookHandle, ustring filename)")
 		
-	LoadRaw			= libxl32.api("xlBookLoadRaw","int(ptr BookHandle, string data, INT size)")
-	SaveRaw			= libxl32.api("xlBookSaveRaw","int(ptr BookHandle, pointer& data, INT& size)")
+	LoadRaw			= libxl32.api("xlBookLoadRaw","bool(ptr BookHandle, string data, INT size)")
+	SaveRaw			= libxl32.api("xlBookSaveRaw","bool(ptr BookHandle, pointer& data, INT& size)")
 		
 	AddSheet		= libxl32.api("xlBookAddSheet","ptr(ptr BookHandle, ustring name, ptr initSheet)") //SheetHandle
 	InsertSheet		= libxl32.api("xlBookInsertSheet","ptr(ptr BookHandle, int index, ustring name, ptr initSheet)") //SheetHandle
@@ -30,7 +30,7 @@ namespace Book{
 	PictureSize		= libxl32.api("xlBookPictureSize","int(ptr BookHandle)")
 	GetPicture		= libxl32.api("xlBookGetPicture","int(ptr BookHandle, int index, pointer& data, INT& size)")
 	AddPicture		= libxl32.api("xlBookAddPicture","int(ptr BookHandle, ustring filename)")
-	AddPicture2		= libxl32.api("xlBookAddPicture2","int(ptr BookHandle, string data, INT size)")
+	AddPicture2		= libxl32.api("xlBookAddPicture2","int(ptr BookHandle, ustring data, INT size)")
 		
 	DefaultFont		= libxl32.api("xlBookDefaultFont","ustring(ptr BookHandle, INT& fontSize)")
 	SetDefaultFont	= libxl32.api("xlBookSetDefaultFont","void(ptr BookHandle, ustring fontName, INT fontSize)")
@@ -46,20 +46,27 @@ namespace Book{
 	SetTemplate		= libxl32.api("xlBookSetTemplate","void(ptr BookHandle, int tmpl)")
 	SetKey			= libxl32.api("xlBookSetKey","void(ptr BookHandle, ustring name, ustring key)")
 	SetLocale		= libxl32.api("xlBookSetLocale","int(ptr BookHandle, string locale)")
-	ErrorMessage	= libxl32.api("xlBookErrorMessage","string(ptr BookHandle)")
+	ErrorMessage	= libxl32.api("xlBookErrorMessage","ptr(ptr BookHandle)")
 
-	//不清楚-未添加
 	AddCustomNumFormat	= libxl32.api("xlBookAddCustomNumFormat","int(ptr BookHandle, ustring customNumFormat)")
 	CustomNumFormat 	= libxl32.api("xlBookCustomNumFormat", "ustring(ptr BookHandle,int fmt)")
 	DatePack		= libxl32.api("xlBookDatePack","double(ptr BookHandle,int year, int month, int day,int hour, int min, int sec, int msec)")
-	DateUnpack		= libxl32.api("xlBookDateUnpack","int(ptr BookHandle, double value,int& year, int& month, int& day,int& hour, int& min, int& sec, int& msec)")
+	DateUnpack		= libxl32.api("xlBookDateUnpack","bool(ptr BookHandle, double value,int& year, int& month, int& day,int& hour, int& min, int& sec, int& msec)")
 	ColorPack		= libxl32.api("xlBookColorPack","int(ptr BookHandle, int red, int green, int blue)")
 	ColorUnpack		= libxl32.api("xlBookColorUnpack","void(ptr BookHandle, int color, int& red, int& green, int& blue)")
 
+	MoveSheet 		= libxl32.api("xlBookMoveSheet","int(ptr BookHandle, int srcIndex, int dstIndex)");
+	AddPictureAsLink 		= libxl32.api("xlBookAddPictureAsLink","int(ptr BookHandle, ustring& filename, int insert)");
+	LoadUsingTempFile 		= libxl32.api("xlBookLoadUsingTempFile","int(ptr BookHandle, ustring& filename, ustring& tempFile)");
+	SaveUsingTempFile 		= libxl32.api("xlBookSaveUsingTempFile","int(ptr BookHandle, ustring& filename, int useTempFile)");
+	LoadPartially 			= libxl32.api("xlBookLoadPartially","int(ptr BookHandle, ustring& filename, int sheetIndex, int firstRow, int lastRow)");
+	LoadPartiallyUsingTempFile = libxl32.api("xlBookLoadPartiallyUsingTempFile","int(ptr BookHandle, ustring& filename, int sheetIndex, int firstRow, int lastRow, ustring& tempFile)");
 }
 
 /**intellisense()
 _SHEETTYPE_SHEET=@0/*_SHEETTYPE_SHEET*/
 _SHEETTYPE_CHART=@1/*_SHEETTYPE_CHART*/
 _SHEETTYPE_UNKNOW=@2/*_SHEETTYPE_UNKNOW*/
+!libxl().Book = !xlBook.
+!xlBook.Load(.(ptr,filename,tempfile) = 插入行
 end intellisense**/

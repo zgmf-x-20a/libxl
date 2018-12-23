@@ -21,3 +21,7 @@ $RECYCLE.BIN/
 # =========================
 # Operating System Files
 # =========================
+demo/res/libxl.dll
+demo/export/receipt.xlsx
+demo/export/formula.xlsx
+demo/export/datetime.xlsx
