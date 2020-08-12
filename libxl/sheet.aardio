@@ -86,7 +86,7 @@ namespace Sheet{
 		};
 		firstRow = {
 			_get = function(){   
-		    	return FirstRow(owner.hwnd);
+		    	return FirstRow(owner.hwnd) + 1;
 			}
 		}
 		lastRow = {
@@ -101,7 +101,7 @@ namespace Sheet{
 		}
 		lastCol = {
 			_get = function(){   
-		    	return LastCol(owner.hwnd) + 1;
+		    	return LastCol(owner.hwnd);
 			}
 		}
 		displayGridlines = {
@@ -688,7 +688,7 @@ namespace Sheet{
 				_get = function(){
 					var areaSplit = owner.areaSplit
 					var eachRange = areaSplit[1];
-					var rowcounts = (eachRange.lastRow - eachRange.iniRow)
+					var rowcounts = (eachRange.lastRow - eachRange.iniRow)  + 1//数量应该是行数相减后加1
 					return {Count = rowcounts}; 
 				}
 			}
@@ -696,7 +696,7 @@ namespace Sheet{
 				_get = function(){
 					var areaSplit = owner.areaSplit
 					var eachRange = areaSplit[1];
-					var colcounts = (eachRange.lastCol - eachRange.iniCol)
+					var colcounts = (eachRange.lastCol - eachRange.iniCol) + 1
 					return {Count = colcounts}; 
 				}
 			}
@@ -1390,6 +1390,7 @@ namespace Sheet{
 !xlSheet.usedRange = !xlRange.
 !xlSheet.usedRange.Rows.Count = 返回已使用行数
 !xlSheet.usedRange.Columns.Count = 返回已使用列数
+!xlSheet.usedRange.address = 返回区域描述
 !xlSheet.rightToLeft = 是否启右对齐模式
 !xlSheet.hidden = 是否隐藏
 !xlSheet.tableNum = 获取区域数量

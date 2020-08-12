@@ -2,8 +2,8 @@
 <project ver="10" name="libxl-3.8" libEmbed="true" icon="..." ui="win" output="libxl-3.8.exe" CompanyName="单位名称" FileDescription="libxl-3.8" LegalCopyright="Copyright (C) 作者 2018" ProductName="libxl-3.8" InternalName="libxl-3.8" FileVersion="0.0.0.1" ProductVersion="0.0.0.1" publishDir="/Publish/" dstrip="false">
 	<file name="main.aardio" path="main.aardio" comment="main.aardio"/>
 	<folder name="资源文件" path="res" embed="true"/>
-	<folder name="窗体文件" path="dlg" comment="目录" embed="true"/>
-	<folder name="script" path="script" embed="true" comment="目录">
+	<folder name="窗体文件" path="dlg" comment="目录" embed="true" local="false"/>
+	<folder name="script" path="script" embed="true" comment="目录" local="false">
 		<file name="autofilter_byvalue.aardio" path="script\autofilter_byvalue.aardio" comment="script\autofilter_byvalue.aardio"/>
 		<file name="autofilter_strcustom.aardio" path="script\autofilter_strcustom.aardio" comment="script\autofilter_strcustom.aardio"/>
 		<file name="autofilter_topN.aardio" path="script\autofilter_topN.aardio" comment="script\autofilter_topN.aardio"/>

@@ -2,7 +2,8 @@ import win.ui;
 /*DSG{{*/
 mainForm = win.form(text="libxl-3.8";right=598;bottom=151)
 mainForm.add(
-static={cls="static";text="请执行Script下的示例";left=131;top=50;right=499;bottom=116;font=LOGFONT(h=-35);transparent=1;z=1}
+static={cls="static";text="请执行Script下的示例";left=131;top=65;right=499;bottom=116;font=LOGFONT(h=-35);notify=1;transparent=1;z=1};
+static2={cls="static";text="执行前，请先从libxl官网下载dll，并放置到res目录下";left=74;top=32;right=574;bottom=61;font=LOGFONT(h=-21);transparent=1;z=2}
 )
 /*}}*/
 
